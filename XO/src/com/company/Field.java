@@ -28,25 +28,25 @@ public class Field {
         //Проверка рядов на выигрыш
         for (int i = 0; i < FIELDSIZE; i++) {
 
-            if(rowCheckWin(i,1)==3) return 1;
-            if(rowCheckWin(i,2)==3) return 2;
+            if(rowCheckWin(1)) return 1;
+            if(rowCheckWin(2)) return 2;
 
         }
 
         //Проверка столбцов на выигрыш
         for (int i = 0; i < FIELDSIZE; i++) {
 
-            if(columnCheckWin(i,1)==3) return 1;
-            if(columnCheckWin(i,2)==3) return 2;
+            if(columnCheckWin(1)) return 1;
+            if(columnCheckWin(2)) return 2;
 
         }
 
         //Проверка диагонали на выигрыш
-        if(diagonalCheckWin(0,0,1) ==3) return 1;
-        if (diagonalCheckWin(0,2,1)==3) return 1;
+        if(diagonalCheckWin(1)) return 1;
+        if (diagonalCheckWin(1)) return 1;
 
-        if(diagonalCheckWin(0,0,2)==3) return 2;
-        if(diagonalCheckWin(0,2,2)==3) return 2;
+        if(diagonalCheckWin(2)) return 2;
+        if(diagonalCheckWin(2)) return 2;
         return 0;
     }
 
@@ -54,56 +54,72 @@ public class Field {
     //Функции, используемые в checkWin
 
     //Проверка на выигрыш в строках
-    private static int rowCheckWin(final int ii, final int sign){
+    private static boolean rowCheckWin(final int sign){
         //Кол-во моих
         int count=0;
 
         //Счетчик кол-ва своих и чужих знаков в ряду
         for (int k=0; k<FIELDSIZE; k++){
-            if(Field.field[ii][k].stateCell()==sign) count++;
+            for (int i = 0; i < FIELDSIZE; i++) {
+                if(field[k][i].stateCell()==sign) count++;
+                else if(count==3) return true;
+                else count=0;
+            }
+
+            if(count==3) return true;
+            count=0;
         }
 
-        return count;
+        return false;
     }
 
 
     //Проверка на выигрыш в столбцах
-    private static int columnCheckWin(final int jj, final int sign){
+    private static boolean columnCheckWin(final int sign){
 
         //Кол-во моих
         int count=0;
 
         //Счетчик кол-ва своих и чужих знаков в ряду
         for (int k=0; k<FIELDSIZE; k++){
-            if(Field.field[k][jj].stateCell()==sign) count++;
+            for (int i = 0; i < Field.FIELDSIZE; i++) {
+                if(Field.field[i][k].stateCell()==sign) count++;
+                else if(count==3) return true;
+                else count=0;
+            }
+            if (count==3) return true;
+            count=0;
+
         }
 
-        return count;
+        return false;
     }
 
 
     //Проверка на выигрыш по диагонали
-    private static int diagonalCheckWin(final int ii, final int jj, final int sign){
+    private static boolean diagonalCheckWin(final int sign){
 
         int count=0;
 
-        //Если клетка не расположена на диагонали, то возвращается 0
-        if(ii==jj){
+        //Проверяем поле по диагонали справа на лево
+        for(int i=0; i<FIELDSIZE; i++){
+            if(Field.field[i][i].stateCell()==sign) count++;
+            else if (count==3) return true;
+            else count=0;
+        }
 
-            for(int i=0; i<FIELDSIZE; i++){
-                if(Field.field[i][i].stateCell()==sign) count++;
-            }
+        if(count==3) return true;
+        count=0;
 
+        //Проверяем по второй диагонали
+        for (int i = 0; i < FIELDSIZE; i++) {
+            if(Field.field[i][FIELDSIZE-1-i].stateCell()==sign) count++;
+            else if(count==3) return true;
+            else count=0;
+        }
 
-        }else if(ii+jj==FIELDSIZE-1){
+        if(count==3) return true;
 
-            for (int i = 0; i < FIELDSIZE; i++) {
-                if(Field.field[i][FIELDSIZE-1-i].stateCell()==sign) count++;
-            }
-
-
-        }else return 0;
-
-        return count;
+        return false;
     }
 }

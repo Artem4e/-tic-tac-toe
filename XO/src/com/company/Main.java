@@ -2,8 +2,7 @@ package com.company;
 
 public class Main {
 
-    //Размер поля
-    public static final int FIELDSIZE=3;
+    public static boolean FirstComp=false;
 
     public static void main(String[] args) {
 
@@ -11,6 +10,7 @@ public class Main {
         app.setVisible(true);
 
         Field.fieldCreate();
+
 
     }
 

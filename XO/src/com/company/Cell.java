@@ -36,7 +36,7 @@ public class Cell{
     }
 
     //Функция рейтинга клетки
-    public int rating(){
+    public byte rating(){
 
 
         //Если в клетке уже стоит знак, то рейтинг =-1
@@ -44,13 +44,13 @@ public class Cell{
 
 
         //Рейтинги строки и столбца
-        int LineRating=rowRating(i,2);
-        int ColumnRating=columnRating(j,2);
+        byte LineRating=rowRating(i,2);
+        byte ColumnRating=columnRating(j,2);
 
         //Рейтинг диагонали
-        int DiagonalRating=diagonalRating(i,j,2);
+        byte DiagonalRating=diagonalRating(i,j,2);
 
-        return LineRating+ColumnRating+DiagonalRating;
+        return (byte)(LineRating+ColumnRating+DiagonalRating);
 
     }
 
@@ -60,7 +60,7 @@ public class Cell{
 
 
     //Рейтинг строки
-    private static int rowRating(final int ii, final int sign){
+    private static byte rowRating(final int i, final int sign){
         //Кол-во моих
         int countMy=0;
         //Кол-во чужих
@@ -68,34 +68,33 @@ public class Cell{
 
         //Счетчик кол-ва своих и чужих знаков в ряду
         for (int k=0; k<FIELDSIZE; k++){
-            if(Field.field[ii][k].stateCell()==sign) countMy++;
-            if(Field.field[ii][k].stateCell()!=sign && Field.field[ii][k].stateCell()!=0) countStrangers++;
+            if(Field.field[i][k].stateCell()==sign) countMy++;
+            if(Field.field[i][k].stateCell()!=sign && Field.field[i][k].stateCell()!=0) countStrangers++;
         }
-
         return calculateRating(countMy, countStrangers);
     }
 
     //Рейтинг столбца
-    private static int columnRating(final int jj, final int sign){
+    private static byte columnRating(final int j, final int sign){
         //Кол-во моих
-        int countMy=0;
+        byte countMy=0;
         //Кол-во чужих
-        int countStrangers=0;
+        byte countStrangers=0;
 
         //Счетчик кол-ва своих и чужих знаков в ряду
         for (int k=0; k<FIELDSIZE; k++){
-            if(Field.field[k][jj].stateCell()==sign) countMy++;
-            if(Field.field[k][jj].stateCell()!=sign && Field.field[k][jj].stateCell()!=0) countStrangers++;
+            if(Field.field[k][j].stateCell()==sign) countMy++;
+            if(Field.field[k][j].stateCell()!=sign && Field.field[k][j].stateCell()!=0) countStrangers++;
         }
 
         return calculateRating(countMy, countStrangers);
     }
 
     //Рейтинг диагонали
-    private static int diagonalRating(final int ii, final int jj, final int sign){
+    private static byte diagonalRating(final int ii, final int jj, final int sign){
 
-        int countMy=0;
-        int countStrangers=0;
+        byte countMy=0;
+        byte countStrangers=0;
 
 
 
@@ -122,10 +121,10 @@ public class Cell{
     }
 
     //Вычисление рейтинга по кол-ву своих и чужих знаков
-    private static int calculateRating(int countMy, int countStrangers){
-        if(countMy==2) return 8;
+    private static byte calculateRating(int countMy, int countStrangers){
+        if(countMy==2) return 40;
 
-        else if(countStrangers==2) return 7;
+        else if(countStrangers==2) return 20;
 
         else if (countMy==1) return 3;
 
@@ -138,11 +137,11 @@ public class Cell{
     }
 
     //Вычисление рейтинга для диагонали
-    private static int calculateDiagonalRating(int countMy, int countStrangers){
+    private static byte calculateDiagonalRating(byte countMy, byte countStrangers){
 
-        if(countMy==2) return 8;
+        if(countMy==2) return 40;
 
-        else if(countStrangers==2) return 7;
+        else if(countStrangers==2) return 20;
 
         else if(countMy==1 && countStrangers==1) return 4;
 

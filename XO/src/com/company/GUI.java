@@ -6,6 +6,9 @@ import javax.swing.*;
 
 public class GUI extends JFrame{
 
+    public static String PlayerSign="X";
+    public static String CompSign="O";
+
     //Индикатор конца игры
     boolean EndGame=false;
 
@@ -20,6 +23,9 @@ public class GUI extends JFrame{
 
     //Пустое место, чтобы кнопки не сдвигались
     private JLabel Space=new JLabel(" ");
+
+    //Пустое место в конец
+    private JLabel Place[]=new JLabel[Field.FIELDSIZE-3];
 
     //"Счет"
     private JLabel LableCount=new JLabel("Счет:");
@@ -36,11 +42,17 @@ public class GUI extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Container container=this.getContentPane();
-        container.setLayout(new GridLayout(4,3,2,2));
+        container.setLayout(new GridLayout(Field.FIELDSIZE+1,Field.FIELDSIZE,2,2));
 
         container.add(Space);
         container.add(LableCount);
         container.add(Count);
+
+        //Добавляем пустое место в конец
+        for (int i=0; i<Field.FIELDSIZE-3; i++){
+            Place[i]=new JLabel(" ");
+            container.add(Place[i]);
+        }
 
         for (int i=0; i<Field.FIELDSIZE; i++){
             for(int j=0; j<Field.FIELDSIZE; j++){
@@ -51,11 +63,6 @@ public class GUI extends JFrame{
         }
 
     }
-
-    //Функция ставящая знак в кнопку
-   /*public void putSign(int i, int j, String sign){
-        button[i][j].setText(sign);
-    }*/
 
     class ButtonAction implements ActionListener{
 
@@ -72,32 +79,33 @@ public class GUI extends JFrame{
             //Игрок сходил
             boolean PlayerSet=false;
 
-            if(I <9 && Field.checkWin()==0) {
+            if(I <Field.FIELDSIZE*Field.FIELDSIZE && Field.checkWin()==0) {
 
                 if(button[i][j].getText()==""){
                     //Счетчик ходов
                     I++;
 
                     Field.addSign(i, j, true);
-                    button[i][j].setText("X");
+                    button[i][j].setText(PlayerSign);
                     PlayerSet=true;
                 } else JOptionPane.showMessageDialog(null,"Эта клетка занята","Ошибка",JOptionPane.PLAIN_MESSAGE);
 
             } else EndGame=true;
 
-            if(I <9 && Field.checkWin()==0) {
+            if(I <Field.FIELDSIZE*Field.FIELDSIZE && Field.checkWin()==0) {
                 if(PlayerSet) {
                     //Счетчик ходов
                     I++;
 
-
                     PlayerComp playerComp = new PlayerComp();
                     playerComp.set();
-                    button[playerComp.Iret][playerComp.Jret].setText("0");
+                    button[playerComp.ii][playerComp.jj].setText(CompSign);
+
+                    if(I>=Field.FIELDSIZE*Field.FIELDSIZE) EndGame=true;
                 }
             } else EndGame=true;
 
-            if(EndGame) {
+            if(EndGame && Field.checkWin()==0) {
                 JOptionPane.showMessageDialog(null,"Ничья","Игра окончена",JOptionPane.PLAIN_MESSAGE);
 
                 //Обнуление поля и клеток
@@ -109,7 +117,23 @@ public class GUI extends JFrame{
                     }
                 }
                 Field.fieldCreate();
+
+                //Ходим по очереди
+                if(Main.FirstComp) Main.FirstComp=false;
+                else {
+                    //Меняем знаки
+                    String A=PlayerSign;
+                    PlayerSign=CompSign;
+                    CompSign=A;
+
+                    PlayerComp playerComp = new PlayerComp();
+                    playerComp.set();
+                    button[playerComp.ii][playerComp.jj].setText(CompSign);
+                    I++;
+                    Main.FirstComp=true;
+                }
             }
+
             if(Field.checkWin()==1) {
                 JOptionPane.showMessageDialog(null,"Вы проиграли","Игра окончена",JOptionPane.PLAIN_MESSAGE);
                 CountComp++;
@@ -125,7 +149,23 @@ public class GUI extends JFrame{
                 }
                 Field.fieldCreate();
 
+                //Ходим по очереди
+                if(Main.FirstComp) Main.FirstComp=false;
+                else {
+                    //Меняем знаки
+                    String A=PlayerSign;
+                    PlayerSign=CompSign;
+                    CompSign=A;
+
+                    PlayerComp playerComp = new PlayerComp();
+                    playerComp.set();
+                    button[playerComp.ii][playerComp.jj].setText(CompSign);
+                    I++;
+                    Main.FirstComp=true;
+                }
+
             }
+
             if(Field.checkWin()==2){
                 JOptionPane.showMessageDialog(null,"Вы победили","Игра окончена",JOptionPane.PLAIN_MESSAGE);
                 CountPlayer++;
@@ -140,12 +180,25 @@ public class GUI extends JFrame{
                     }
                 }
                 Field.fieldCreate();
+
+                //Ходим по очереди
+                if(Main.FirstComp) Main.FirstComp=false;
+                else {
+                    //Меняем знаки
+                    String A=PlayerSign;
+                    PlayerSign=CompSign;
+                    CompSign=A;
+
+                    PlayerComp playerComp=new PlayerComp();
+                    playerComp.set();
+                    button[playerComp.ii][playerComp.jj].setText(CompSign);
+                    I++;
+                    Main.FirstComp=true;
+                }
+
             }
 
         }
-
-
-
 
     }
 }
